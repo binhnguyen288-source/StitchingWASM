@@ -4,10 +4,13 @@
 
     </title>
     <body>
-        <input type="file" multiple onchange="process(this)">
+        <div style="display: flex; flex-direction: column;">
+            <input type="file" multiple onchange="process(this)">
+            
+            <!-- <textarea id="consoleout" style="width: 90vw;"></textarea> -->
+            <canvas id="outimage" style="border: 2px solid black;"></canvas>
+        </div>
         <script src="out.js"></script>
-        <!-- <textarea id="consoleout" style="width: 90vw;"></textarea> -->
-        <canvas id="outimage" style="border: 2px solid black;"></canvas>
         <script>
             let wasm;
             let wasmPromise = new Promise(async resolve => {
