@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <title>
+
+    </title>
+    <body>
+        <input type="file" multiple onchange="process(this)">
+        <script src="out.js"></script>
+        <!-- <textarea id="consoleout" style="width: 90vw;"></textarea> -->
+        <canvas id="outimage" style="border: 2px solid black;"></canvas>
+        <script>
+            let wasm;
+            let wasmPromise = new Promise(async resolve => {
+                wasm = await stitcher({
+                    // print: v => document.getElementById("consoleout").value += v + '\n',
+                    // printErr: v => document.getElementById("consoleout").value += v + '\n'
+                }); 
+                resolve();
+            });
+            async function process(e) {
+                const readPromises = [];
+                for (const v of e.files) {
+                    readPromises.push(
+                        new Promise(resolve => {
+                            const fileReader = new FileReader();
+                            const img = document.createElement('img');
+                            fileReader.onload = res => {
+                                
+                                img.src = res.target.result;
+                                img.onload = v => {
+                                    const canvas = document.createElement('canvas');
+                                    
+                                    canvas.width = img.naturalWidth / 4;
+                                    canvas.height = img.naturalHeight / 4;
+                                    const ctx = canvas.getContext("2d", { alpha: false });
+
+                                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                                    resolve([canvas.width, canvas.height, ctx.getImageData(0, 0, canvas.width, canvas.height).data]);
+
+                                }
+                            }
+                            fileReader.readAsDataURL(v);
+                        })
+                    );
+                }
+
+                const images = await Promise.all(readPromises);
+                let bufferSize = 0;
+                images.forEach(([width, height]) => {
+                    bufferSize += width * height * 4;
+                });
+
+
+                await wasmPromise;
+
+                const widthsPtr = wasm._malloc(4 * images.length);
+                const heightsPtr = wasm._malloc(4 * images.length);
+                const buffer = wasm._malloc(bufferSize);
+                let bufferPtr = buffer;
+                for (let i = 0; i < images.length; ++i) {
+                    const [width, height, data] = images[i];
+                    wasm.HEAP32[(widthsPtr + 4 * i) >> 2] = width;
+                    wasm.HEAP32[(heightsPtr + 4 * i) >> 2] = height;
+                    wasm.HEAPU8.set(data, bufferPtr);
+                    bufferPtr += 4 * width * height;
+                }
+                let ret = wasm._appendImages(buffer, widthsPtr, heightsPtr, images.length);
+                wasm._free(widthsPtr);
+                wasm._free(heightsPtr);
+                wasm._free(buffer);
+                wasm.callMain([
+                    "--warp", "cylindrical",
+                    "--features", "surf",
+                    "--preview"
+                ]);
+                let retBuffer = wasm.HEAPU32[(ret) >> 2];
+                let width = wasm.HEAP32[(ret + 4) >> 2];
+                let height = wasm.HEAP32[(ret + 8) >> 2];
+
+
+                const retImageData = new ImageData(new Uint8ClampedArray(wasm.HEAPU8.subarray(retBuffer, retBuffer + 4 * width * height)), width, height);
+                const outCanvas = document.getElementById("outimage");
+                outCanvas.width = width;
+                outCanvas.height = height;
+                const outCtx = outCanvas.getContext("2d", { alpha: false });
+                outCtx.putImageData(retImageData, 0, 0);
+
+               
+                
+
+            }
+        </script>
+    </body>
+</html>
