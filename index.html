@@ -10,12 +10,8 @@
         <div style="display: flex; flex-direction: column;">
             <input type="file" multiple onchange="process(this)">
             
-            <!-- <textarea id="consoleout" style="width: 90vw;"></textarea> -->
-            <canvas id="outimage" style="border: 2px solid black;"></canvas>
-            <a id="download" href="#">Download</a>
-            
-            <div style="width: 100%; height: 100%;" id="panorama"></div>
-        
+            <canvas id="outimage" style="border: 2px solid black;" hidden></canvas>
+            <div style="width: 100%; height: 50vh;" id="panorama"></div>
         </div>
         <script src="out.js"></script>
         <script>
