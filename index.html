@@ -95,14 +95,11 @@
                 const outCtx = outCanvas.getContext("2d", { alpha: false });
                 outCtx.putImageData(retImageData, 0, 0);
 
-                const ref = outCanvas.toDataURL("image/png");
+                const ref = outCanvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
 
                 var link = document.getElementById('download');
-                link.setAttribute('download', 'MintyPaper.png');
-                link.setAttribute('href', ref.replace("image/png", "image/octet-stream"));
-                link.click();
-
-
+                link.setAttribute('download', 'Panorama.png');
+                link.setAttribute('href', ref);
                 
                 pannellum.viewer('panorama', {
                     "type": "equirectangular",
