@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html>
-    <title>
-
-    </title>
+    <head>
+        <title>Stitch</title>
+        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+    </head>
     <body>
         <div style="display: flex; flex-direction: column;">
             <input type="file" multiple onchange="process(this)">
             
             <!-- <textarea id="consoleout" style="width: 90vw;"></textarea> -->
             <canvas id="outimage" style="border: 2px solid black;"></canvas>
+            
+            <div id="panorama" style="width: 100%;"></div>
         </div>
         <script src="out.js"></script>
         <script>
@@ -88,8 +93,15 @@
                 const outCtx = outCanvas.getContext("2d", { alpha: false });
                 outCtx.putImageData(retImageData, 0, 0);
 
-               
-                
+                const can = document.createElement("canvas");
+
+
+
+                pannellum.viewer('panorama', {
+                    "type": "equirectangular",
+                    "panorama": outCanvas.toDataURL()
+                });
+
 
             }
         </script>
