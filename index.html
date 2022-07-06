@@ -95,17 +95,21 @@
                 const outCtx = outCanvas.getContext("2d", { alpha: false });
                 outCtx.putImageData(retImageData, 0, 0);
 
-                const url = URL.createObjectURL(outCanvas.toBlob());
-                var link = document.getElementById('download');
-                link.setAttribute('download', 'Panorama.png');
-                link.setAttribute('href', url);
+                outCanvas.toBlob((blob) => {
+                    const url = URL.createObjectURL(outCanvas.toBlob());
+                    var link = document.getElementById('download');
+                    link.setAttribute('download', 'Panorama.png');
+                    link.setAttribute('href', url);
 
-                
-                pannellum.viewer('panorama', {
-                    "type": "equirectangular",
-                    "panorama": url,
-                    "autoLoad": true
-                });
+                    
+                    pannellum.viewer('panorama', {
+                        "type": "equirectangular",
+                        "panorama": url,
+                        "autoLoad": true
+                    });
+                }, "image/png");
+
+               
 
 
             }
