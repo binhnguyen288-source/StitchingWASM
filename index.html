@@ -12,7 +12,7 @@
             
             <!-- <textarea id="consoleout" style="width: 90vw;"></textarea> -->
             <canvas id="outimage" style="border: 2px solid black;"></canvas>
-            <a id="download">Download</a>
+            <a id="download" href="#">Download</a>
             
             <div width="600" id="panorama"></div>
         
@@ -95,10 +95,13 @@
                 const outCtx = outCanvas.getContext("2d", { alpha: false });
                 outCtx.putImageData(retImageData, 0, 0);
 
-                const ref = outCanvas.toDataURL();
+                const ref = outCanvas.toDataURL("image/png");
 
-                console.log(ref);
-                document.getElementById("download").href = ref;
+                var link = document.getElementById('download');
+                link.setAttribute('download', 'MintyPaper.png');
+                link.setAttribute('href', ref.replace("image/png", "image/octet-stream"));
+                link.click();
+
 
                 
                 pannellum.viewer('panorama', {
