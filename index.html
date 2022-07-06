@@ -95,9 +95,7 @@
                 const outCtx = outCanvas.getContext("2d", { alpha: false });
                 outCtx.putImageData(retImageData, 0, 0);
 
-                const ref = outCanvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-
-                const url = URL.createObjectURL(new Blob([ref]));
+                const url = URL.createObjectURL(outCanvas.toBlob());
                 var link = document.getElementById('download');
                 link.setAttribute('download', 'Panorama.png');
                 link.setAttribute('href', url);
