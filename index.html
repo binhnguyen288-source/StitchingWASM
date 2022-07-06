@@ -96,7 +96,7 @@
                 outCtx.putImageData(retImageData, 0, 0);
 
                 outCanvas.toBlob((blob) => {
-                    const url = URL.createObjectURL(outCanvas.toBlob());
+                    const url = URL.createObjectURL(blob);
                     var link = document.getElementById('download');
                     link.setAttribute('download', 'Panorama.png');
                     link.setAttribute('href', url);
