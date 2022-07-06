@@ -97,13 +97,15 @@
 
                 const ref = outCanvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
 
+                const url = URL.createObjectURL(new Blob([ref]));
                 var link = document.getElementById('download');
                 link.setAttribute('download', 'Panorama.png');
-                link.setAttribute('href', ref);
+                link.setAttribute('href', url);
+
                 
                 pannellum.viewer('panorama', {
                     "type": "equirectangular",
-                    "panorama": ref,
+                    "panorama": url,
                     "autoLoad": true
                 });
 
