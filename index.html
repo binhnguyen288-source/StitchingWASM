@@ -13,7 +13,8 @@
             <!-- <textarea id="consoleout" style="width: 90vw;"></textarea> -->
             <canvas id="outimage" style="border: 2px solid black;"></canvas>
             
-            <div id="panorama" style="width: 100%;"></div>
+            <iframe width="600" height="400" allowfullscreen style="border-style:none;" id="panorama"></iframe>
+        
         </div>
         <script src="out.js"></script>
         <script>
@@ -93,14 +94,7 @@
                 const outCtx = outCanvas.getContext("2d", { alpha: false });
                 outCtx.putImageData(retImageData, 0, 0);
 
-                const can = document.createElement("canvas");
-
-
-
-                pannellum.viewer('panorama', {
-                    "type": "equirectangular",
-                    "panorama": outCanvas.toDataURL()
-                });
+               document.getElementById("panorama").src = outCanvas.toDataURL();
 
 
             }
